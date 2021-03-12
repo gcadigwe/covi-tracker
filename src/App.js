@@ -1,15 +1,11 @@
 import "./App.css";
+import Header from "./components/Header/Header";
 
 function App() {
   return (
     <div className="app">
-      <h1>COVID-19 TRACKER</h1>
-      <FormControl className="app__dropdown">
-        <Select variant="outlined" value="abc">
-          
-        </Select>
-      </FormControl>
       {/* Header */}
+      <Header />
       {/* Title */}
 
       {/* Info box */}
