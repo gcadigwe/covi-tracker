@@ -9,11 +9,14 @@ import {
 import "./Header.css";
 import axios from "../../axios/axios";
 import Infobox from "../InfoBoxs/Infobox";
+import Table from "../Table/Table";
+import { sortData } from "../../util";
 
 function Header() {
   const [countries, setCountries] = useState([]);
   const [countryName, setCountry] = useState("Worldwide");
   const [countryInfo, setCountryInfo] = useState([]);
+  const [tableData, setTableData] = useState([]);
 
   useEffect(() => {
     const getCountries = async () => {
@@ -25,10 +28,21 @@ function Header() {
             value: data.countryInfo.iso2,
           },
         ]);
+        const sortedData = sortData(result.data);
         setCountries(Country);
+        setTableData(sortedData);
       });
     };
     getCountries();
+  }, []);
+
+  useEffect(() => {
+    const fetchAll = async () => {
+      await axios.get("/all").then((result) => {
+        setCountryInfo(result.data);
+      });
+    };
+    fetchAll();
   }, []);
 
   const handleChange = async (e) => {
@@ -90,6 +104,7 @@ function Header() {
       <Card className="header__right">
         <CardContent>
           <h3>Live Cases by Country</h3>
+          <Table countries={tableData} />
           <h3>world wide cases</h3>
         </CardContent>
       </Card>
