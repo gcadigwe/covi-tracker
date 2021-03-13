@@ -11,12 +11,18 @@ import axios from "../../axios/axios";
 import Infobox from "../InfoBoxs/Infobox";
 import Table from "../Table/Table";
 import { sortData } from "../../util";
+import Linegraph from "../../components/Linegraph/Linegraph";
+import Map from "../Map/Map";
+import "leaflet/dist/leaflet.css";
 
 function Header() {
   const [countries, setCountries] = useState([]);
   const [countryName, setCountry] = useState("Worldwide");
   const [countryInfo, setCountryInfo] = useState([]);
   const [tableData, setTableData] = useState([]);
+  const [mapCenter, setMapCenter] = useState([51.505, -0.09]);
+  const [mapZoom, setMapZoom] = useState(13);
+  const [mapCountries, setMapCountries] = useState([]);
 
   useEffect(() => {
     const getCountries = async () => {
@@ -31,6 +37,7 @@ function Header() {
         const sortedData = sortData(result.data);
         setCountries(Country);
         setTableData(sortedData);
+        setMapCountries(result.data);
       });
     };
     getCountries();
@@ -55,10 +62,12 @@ function Header() {
     await axios.get(url).then((result) => {
       setCountry(countryCode);
       setCountryInfo(result.data);
+      setMapCenter([result.data.countryInfo.lat, result.data.countryInfo.long]);
+      setMapZoom(8);
     });
   };
 
-  console.log(countryInfo);
+  console.log(mapCenter);
 
   //   console.log("COUNTRIES >>>",countries && countries[0].[0].value)
   //   console.log("COUNTRIES2 >>>",countries && countries)
@@ -100,12 +109,15 @@ function Header() {
             total={countryInfo.deaths}
           />
         </div>
+        <Map countries={mapCountries} center={mapCenter} zoom={mapZoom} />
       </div>
       <Card className="header__right">
         <CardContent>
           <h3>Live Cases by Country</h3>
           <Table countries={tableData} />
           <h3>world wide cases</h3>
+          <p>Chart</p>
+          <Linegraph />
         </CardContent>
       </Card>
     </div>
